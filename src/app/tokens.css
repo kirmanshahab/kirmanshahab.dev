@@ -1,0 +1,54 @@
+/*
+ * Design tokens (plan section 6.5.3). The only place colours are defined.
+ * Components use these through Tailwind (bg-bg, text-muted, border-line…)
+ * or var(--…). Checked by `pnpm contrast` → design/contrast.md.
+ */
+:root {
+  --bg: #FAFAF9;
+  --surface: #FFFFFF;
+  --surface-2: #F5F5F4;
+  --ink: #0C0A09;
+  --ink-2: #292524;
+  --muted: #57534E;
+  --faint: #A8A29E;
+  --line: #E7E5E4;
+  --line-strong: #D6D3D1;
+  --accent: #0F766E;
+  --accent-soft: #CCFBF1;
+  --accent-ink: #FFFFFF;
+  --ok: #15803D;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #09090B;
+  --surface: #111113;
+  --surface-2: #18181B;
+  --ink: #FAFAF9;
+  --ink-2: #E7E5E4;
+  --muted: #A1A1AA;
+  --faint: #52525B;
+  --line: #27272A;
+  --line-strong: #3F3F46;
+  --accent: #2DD4BF;
+  --accent-soft: #042F2E;
+  --accent-ink: #042F2E;
+  --ok: #4ADE80;
+  color-scheme: dark;
+}
+
+:root {
+  /* Heatmap: 5 steps, accent mixed into the page background. */
+  --heat-0: var(--line);
+  --heat-1: color-mix(in oklab, var(--accent) 25%, var(--bg));
+  --heat-2: color-mix(in oklab, var(--accent) 50%, var(--bg));
+  --heat-3: color-mix(in oklab, var(--accent) 75%, var(--bg));
+  --heat-4: var(--accent);
+
+  /* Motion (6.5.7) */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --dur-micro: 150ms;
+  --dur-ui: 250ms;
+  --dur-section: 400ms;
+}

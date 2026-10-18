@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup B · System map</title>
+<script src="theme.js"></script>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  .hero { position: relative; overflow-x: clip; margin-inline: calc(var(--gutter) * -1); padding: 128px var(--gutter) 96px; }
+  .map {
+    position: absolute; top: 24px; right: 0; width: 760px; height: 520px;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 45%), linear-gradient(to bottom, #000 70%, transparent 100%);
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+            mask-image: linear-gradient(to right, transparent 0%, #000 45%), linear-gradient(to bottom, #000 70%, transparent 100%);
+  }
+  .map svg { width: 100%; height: 100%; overflow: visible; }
+  .map .edge { fill: none; stroke: var(--line-strong); stroke-width: 1; }
+  .map .edge.hot { stroke: var(--accent); }
+  .map .pulse { fill: var(--accent); }
+  .map .node rect { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1; transition: stroke 250ms var(--ease-out); }
+  .map .node text { font: 400 11px/1 var(--font-mono); fill: var(--muted); letter-spacing: 0.02em; transition: fill 250ms var(--ease-out); }
+  .map .node.hot rect { stroke: var(--accent); }
+  .map .node.hot text { fill: var(--ink); }
+  .map .group text { font: 500 10px/1 var(--font-mono); fill: var(--faint); letter-spacing: 0.08em; text-transform: uppercase; }
+  .copy { position: relative; display: grid; gap: 24px; max-width: 640px; }
+  .copy .pill { justify-self: start; }
+  .label { margin-bottom: -8px; }
+  .stats-wrap { position: relative; padding-bottom: 128px; }
+  .caption { margin-top: 12px; display: flex; justify-content: space-between; gap: 16px; }
+  @media (max-width: 1279px) { .map { width: 640px; height: 440px; right: -64px; } }
+  @media (max-width: 1023px) { .map { opacity: .55; } }
+  @media (max-width: 767px) {
+    .hero { padding: 240px var(--gutter) 48px; }
+    .map { top: 16px; right: -136px; width: 520px; height: 356px; opacity: 1;
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 40%), linear-gradient(to bottom, #000 45%, transparent 62%);
+              mask-image: linear-gradient(to right, transparent 0%, #000 40%), linear-gradient(to bottom, #000 45%, transparent 62%); }
+    .stats-wrap { padding-bottom: 80px; }
+    .caption span:last-child { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="nav">
+    <div class="nav-left">
+      <a class="mark" href="#">KS</a>
+      <nav class="nav-links"><a href="#" aria-current="page">Work</a><a href="#">Projects</a><a href="#">Writing</a><a href="#">About</a></nav>
+    </div>
+    <div class="nav-right">
+      <span class="kbd"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search<kbd>⌘K</kbd></span>
+      <span class="icon-btn"><svg class="i" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
+      <span class="menu-btn">Menu</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="map" aria-hidden="true"><svg id="map" viewBox="0 0 760 520"></svg></div>
+    <div class="copy">
+      <span class="pill"><span class="dot"></span>Open to roles · remote / relocation</span>
+      <span class="micro label">Senior full-stack engineer · Lahore, PK</span>
+      <h1 class="display">Kirman Shahab</h1>
+      <p class="lead">I build the hard parts of SaaS: multi-tenant isolation, job queues that don’t melt, billing and metering, and AI agents that safely touch real customer data.</p>
+      <p class="proof">≈4,300 commits in 3 years leading a 111-module multi-tenant CRM.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#">View work <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        <a class="btn btn-secondary" href="#"><svg class="i" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download resume</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-wrap">
+    <div class="stats">
+      <div class="stat"><span class="stat-value">4,289</span><span class="stat-label micro">Commits</span></div>
+      <div class="stat"><span class="stat-value">111</span><span class="stat-label micro">Backend modules</span></div>
+      <div class="stat"><span class="stat-value">9</span><span class="stat-label micro">Production apps</span></div>
+      <div class="stat"><span class="stat-value">5+</span><span class="stat-label micro">Years shipping</span></div>
+    </div>
+    <div class="caption"><span class="micro">Dec 2023 → Oct 2026 · private repos, aggregated</span><span class="micro">Source: git log, dates + counts only</span></div>
+  </section>
+</div>
+
+<script>
+// Generic architecture (no client names). Same shape as content/architecture.ts will have.
+const nodes = [
+  { id: "clients", label: "clients", x: 40, y: 64 },
+  { id: "web", label: "next.js app", x: 176, y: 64 },
+  { id: "api", label: "nestjs api · tenant guard", x: 336, y: 64, hot: true },
+  { id: "mongo", label: "mongodb", x: 600, y: 24 },
+  { id: "redis", label: "redis", x: 600, y: 104, hot: true },
+  { id: "q1", label: "campaign", x: 368, y: 200, hot: true },
+  { id: "q2", label: "drip", x: 368, y: 248 },
+  { id: "q3", label: "email", x: 368, y: 296, hot: true },
+  { id: "q4", label: "imports", x: 368, y: 344 },
+  { id: "p1", label: "twilio", x: 600, y: 200 },
+  { id: "p2", label: "sendgrid / ses", x: 600, y: 248, hot: true },
+  { id: "p3", label: "stripe", x: 600, y: 296 },
+  { id: "p4", label: "llms", x: 600, y: 344 },
+  { id: "ws", label: "socket.io", x: 176, y: 200 },
+  { id: "mcp", label: "mcp server", x: 176, y: 440 },
+  { id: "agents", label: "ai agents", x: 40, y: 440 },
+];
+const edges = [
+  ["clients", "web"], ["web", "api", true], ["api", "mongo"], ["api", "redis", true],
+  ["api", "q1", true], ["api", "q2"], ["api", "q3", true], ["api", "q4"],
+  ["q1", "p1"], ["q2", "p2"], ["q3", "p2", true], ["api", "p3"], ["api", "p4"],
+  ["api", "ws"], ["api", "mcp"], ["mcp", "agents"],
+];
+const groups = [{ label: "bullmq workers", x: 368, y: 184 }, { label: "providers", x: 600, y: 184 }];
+
+document.fonts.ready.then(draw);
+function draw() {
+const svg = document.getElementById("map"), NS = "http://www.w3.org/2000/svg";
+const el = (tag, attrs, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent.appendChild(e); return e; };
+const edgeLayer = el("g", {}), nodeLayer = el("g", {});
+const box = {};
+for (const n of nodes) {
+  const g = el("g", { class: "node" + (n.hot ? " hot" : "") }, nodeLayer);
+  const t = el("text", { x: n.x + 12, y: n.y + 18 }, g); t.textContent = n.label;
+  const w = Math.ceil(t.getComputedTextLength()) + 24;
+  g.insertBefore(el("rect", { x: n.x, y: n.y, width: w, height: 28, rx: 6 }, g), t);
+  box[n.id] = { x: n.x, y: n.y, w, h: 28 };
+}
+for (const g of groups) { const gg = el("g", { class: "group" }, nodeLayer); el("text", { x: g.x, y: g.y }, gg).textContent = g.label; }
+const RIGHT_BUS = 572, LEFT_BUS = 320;
+for (const [a, b, hot] of edges) {
+  const A = box[a], B = box[b];
+  let d;
+  if (Math.abs(A.y - B.y) < 2) {                       // same row: straight
+    const [L, R] = A.x < B.x ? [A, B] : [B, A];
+    d = `M${L.x + L.w} ${L.y + 14} H${R.x}`;
+  } else if (a === "api" && B.x > A.x + A.w - 40) {      // api → right column via shared bus
+    d = `M${A.x + A.w} ${A.y + 14} H${RIGHT_BUS} V${B.y + 14} H${B.x}`;
+  } else if (a === "api" && B.x > A.x) {                 // api → workers: lane down the api's left edge
+    d = `M${A.x + 16} ${A.y + 28} V${B.y + 14} H${B.x}`;
+  } else if (a === "api") {                              // api → left nodes via shared left bus
+    d = `M${A.x} ${A.y + 14} H${LEFT_BUS} V${B.y + 14} H${B.x + B.w}`;
+  } else {                                               // worker → provider elbow
+    const mx = Math.round((A.x + A.w + B.x) / 2) + (b === "p2" ? 0 : 24);
+    d = `M${A.x + A.w} ${A.y + 14} H${mx} V${B.y + 14} H${B.x}`;
+  }
+  const p = el("path", { d, class: "edge" + (hot ? " hot" : "") }, edgeLayer);
+  if (hot && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const c = el("circle", { r: 2, class: "pulse" }, edgeLayer);
+    el("animateMotion", { dur: "3.2s", repeatCount: "1", fill: "freeze", path: d, keyPoints: "0;1", keyTimes: "0;1", calcMode: "spline", keySplines: "0.22 1 0.36 1" }, c);
+  }
+}
+}
+</script>
+</body>
+</html>

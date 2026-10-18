@@ -1,0 +1,24 @@
+---
+slug: queues-that-dont-melt
+title: Campaign and email infrastructure on BullMQ
+summary: Campaigns, drips and scheduled email on Redis queues, and the incidents that taught me to budget rate limits globally rather than per worker.
+period: 2024 – 2026
+role: Lead engineer
+order: 2
+featured: true
+status: draft
+cover: queues
+tldr:
+  - Designed a global Redis rate budget shared by every queue worker after the email provider suspended sending. Zero suspensions since.
+  - Removed a cron thundering herd (every past-due campaign firing at exactly 07:00:05) by spreading jobs with jitter.
+  - Moved scheduled sends off the provider and onto BullMQ delayed jobs, with pause and resume.
+stack: [BullMQ, Redis, NestJS, SendGrid, AWS SES, Twilio]
+---
+
+## Context
+
+A CRM that sends campaigns lives or dies by its queues. Ours ran campaigns, drip sequences, cron automations, bulk imports and every outbound email through BullMQ on Redis.
+
+The interesting part was learning that per-worker limits add up: with *concurrency × workers × per-worker limit*, a "safe" setting on one worker becomes an unsafe one across the fleet. The fix was one shared budget for the whole system.
+
+The full write-up (the two-lane sender model, the suspension post-mortem, domain authentication and inbound reply routing) is being written now.

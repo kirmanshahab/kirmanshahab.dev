@@ -1,0 +1,24 @@
+---
+slug: ai-agents-in-the-crm
+title: Letting AI agents touch real customer data safely
+summary: An MCP server that exposes CRM operations to AI agents, tool calling across three model providers, and metering every token.
+period: 2025 – 2026
+role: Lead engineer
+order: 3
+featured: true
+status: draft
+cover: agents
+tldr:
+  - Built an MCP server that exposes CRM operations to AI agents, with tool calling across Claude, OpenAI and Gemini.
+  - Made AI agents first-class chat members. @mention one in a thread and it opens a task card there.
+  - Built per-use token metering and a wallet, then found and fixed calls that were never being charged.
+stack: [MCP, Anthropic, OpenAI, Gemini, Vercel AI SDK, NestJS]
+---
+
+## Context
+
+Once a CRM holds real borrower data, giving an AI agent access to it is a security question before it's a product question. Each tool call has to be scoped to one tenant, permitted for the user behind it, and paid for.
+
+I built the MCP server that exposes CRM operations as tools, the provider routing that lets the same tools work across three model vendors, and the metering that bills agent usage per call.
+
+The full write-up (tool design, permission tiers, the billing migration) is being written now. It leads into my public project **mcp-tenant-tools**.

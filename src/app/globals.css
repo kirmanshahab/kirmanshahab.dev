@@ -1,0 +1,323 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Map tokens into Tailwind. Components never use raw colours. */
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-ok: var(--ok);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+
+  /* Type scale (6.5.4): size / line-height / tracking */
+  --text-display: 64px;
+  --text-display--line-height: 68px;
+  --text-display--letter-spacing: -0.035em;
+  --text-display-sm: 44px;
+  --text-display-sm--line-height: 48px;
+  --text-display-sm--letter-spacing: -0.035em;
+  --text-h1: 40px;
+  --text-h1--line-height: 44px;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: 28px;
+  --text-h2--line-height: 34px;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h3: 20px;
+  --text-h3--line-height: 28px;
+  --text-h3--letter-spacing: -0.01em;
+  --text-lead: 20px;
+  --text-lead--line-height: 28px;
+  --text-lead--letter-spacing: -0.01em;
+  --text-body: 16px;
+  --text-body--line-height: 26px;
+  --text-small: 14px;
+  --text-small--line-height: 22px;
+  --text-micro: 12px;
+  --text-micro--line-height: 16px;
+  --text-micro--letter-spacing: 0.06em;
+
+  --container-content: 1120px;
+  --container-wide: 1280px;
+  --container-measure: 68ch;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 96px;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 26px;
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4 { font-weight: 600; text-wrap: balance; }
+  p, li, dd { text-wrap: pretty; }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .dark { scrollbar-color: var(--line-strong) var(--bg); }
+  .dark ::-webkit-scrollbar { width: 12px; height: 12px; }
+  .dark ::-webkit-scrollbar-track { background: var(--bg); }
+  .dark ::-webkit-scrollbar-thumb { background: var(--line-strong); border: 3px solid var(--bg); border-radius: 999px; }
+  img, svg { display: block; }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: calc(var(--container-content) + 2 * var(--gutter));
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  :root { --gutter: 16px; }
+  @media (min-width: 768px) { :root { --gutter: 24px; } }
+  @media (min-width: 1024px) { :root { --gutter: 32px; } }
+
+  .micro {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  /* Visual size stays small; the hit area grows to 44px on touch screens. */
+  .touch-target { position: relative; }
+  @media (pointer: coarse) { .touch-target::before { content: ""; position: absolute; inset: -6px; } }
+
+  .link {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--line-strong);
+    transition: text-decoration-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+  }
+  .link:hover { text-decoration-color: var(--accent); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding-inline: 16px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out),
+      border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+  }
+  @media (min-width: 768px) { .btn { height: 40px; } }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled, .btn[aria-disabled="true"] { opacity: 0.5; pointer-events: none; }
+  .btn-primary { background: var(--ink); color: var(--bg); }
+  .btn-primary:hover { background: var(--ink-2); }
+  .btn-secondary { background: var(--surface); color: var(--ink); border-color: var(--line-strong); }
+  .btn-secondary:hover { border-color: var(--muted); }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 28px;
+    padding-inline: 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding-inline: 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .card {
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    transition: transform var(--dur-ui) var(--ease-out), border-color var(--dur-ui) var(--ease-out);
+  }
+  .dark .card { box-shadow: 0 0 0 1px var(--line); border-color: transparent; }
+  .card-link:hover { transform: translateY(-2px); border-color: var(--line-strong); }
+  .dark .card-link:hover { box-shadow: 0 0 0 1px var(--line-strong); }
+  /* Cursor-following highlight, 6% opacity, desktop pointers only. */
+  .card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--accent) 6%, transparent), transparent 70%);
+    transition: opacity var(--dur-ui) var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .card-link:hover::after { opacity: 1; }
+  }
+
+  .status-dot { position: relative; width: 8px; height: 8px; border-radius: 999px; background: var(--ok); flex: none; }
+  .status-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ok);
+    animation: pulse 2s var(--ease-out) infinite;
+  }
+
+  /* Section enter: fade + 8px rise, once. Only hidden when JS is running. */
+  .js [data-reveal] { opacity: 0; transform: translateY(8px); }
+  .js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+    transition: opacity var(--dur-section) var(--ease-out), transform var(--dur-section) var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 40ms);
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+@keyframes heat-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .status-dot::after { display: none; }
+  .js [data-reveal] { opacity: 1; transform: none; }
+}
+
+/* View transitions between pages (React <ViewTransition>). */
+::view-transition-old(root) { animation: vt-out var(--dur-ui) var(--ease-in) both; }
+::view-transition-new(root) { animation: vt-in var(--dur-section) var(--ease-out) both; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; transform: translateY(8px); } }
+
+@media print {
+  .no-print { display: none !important; }
+}
+
+/* ---- Hero system map (Direction B, ADR 0001) ---- */
+.map-node rect, .map-node text, .map-edge {
+  transition: stroke var(--dur-ui) var(--ease-out), fill var(--dur-ui) var(--ease-out);
+}
+.map-node[data-active] rect { stroke: var(--accent); }
+.map-node[data-active] text { fill: var(--ink); }
+.map-edge[data-active] { stroke: var(--accent); }
+
+.hero-map {
+  position: absolute;
+  pointer-events: none;
+  top: 24px;
+  right: 0;
+  width: 760px;
+  height: 520px;
+  --mask-x: linear-gradient(to right, transparent 0%, #000 45%);
+  --mask-y: linear-gradient(to bottom, #000 70%, transparent 100%);
+  -webkit-mask-image: var(--mask-x), var(--mask-y);
+  -webkit-mask-composite: source-in;
+  mask-image: var(--mask-x), var(--mask-y);
+  mask-composite: intersect;
+}
+.hero-map svg { width: 100%; height: 100%; overflow: visible; }
+@media (max-width: 1279px) { .hero-map { width: 640px; height: 440px; right: -64px; } }
+@media (max-width: 1023px) { .hero-map { opacity: 0.55; } }
+@media (max-width: 767px) {
+  .hero-map {
+    top: 16px; right: -136px; width: 520px; height: 356px; opacity: 1;
+    --mask-x: linear-gradient(to right, transparent 0%, #000 40%);
+    --mask-y: linear-gradient(to bottom, #000 45%, transparent 62%);
+  }
+}
+/* On phones the map sits above the text; the top padding is derived from the
+   map's visible height (356px × the 62% mask stop), not from the spacing scale. */
+@media (max-width: 767px) { .hero { padding-top: calc(356px * 0.63); } }
+
+/* ---- Heatmap ---- */
+.heat-0 { fill: var(--heat-0); }
+.heat-1 { fill: var(--heat-1); }
+.heat-2 { fill: var(--heat-2); }
+.heat-3 { fill: var(--heat-3); }
+.heat-4 { fill: var(--heat-4); }
+/* Cells fill left to right once (600ms) when the heatmap scrolls into view:
+   one animated mask per band instead of one animation per cell. */
+@property --sweep { syntax: "<percentage>"; inherits: false; initial-value: 100%; }
+.js .heatmap .heat-cells { --sweep: -10%; mask-image: linear-gradient(to right, #000 var(--sweep), transparent calc(var(--sweep) + 10%)); }
+.js .heatmap.is-in .heat-cells { animation: heat-sweep 600ms var(--ease-out) forwards; }
+@keyframes heat-sweep { from { --sweep: -10%; } to { --sweep: 100%; } }
+@media (prefers-reduced-motion: reduce) { .js .heatmap .heat-cells { mask-image: none; } }
+.heat-band { cursor: crosshair; }
+
+/* ---- Resume ---- */
+.resume-section { display: grid; gap: 16px; padding-block: 32px; border-bottom: 1px solid var(--line); }
+.resume-section:last-child { border-bottom: 0; }
+@media (min-width: 768px) { .resume-section { grid-template-columns: 160px 1fr; gap: 32px; } }
+
+/* Print stylesheet for /resume (6.5.8): black on white, no chrome, one column. */
+@media print {
+  @page { size: A4; margin: 14mm; }
+  :root, .dark { --bg: #fff; --surface: #fff; --surface-2: #fff; --ink: #000; --ink-2: #111; --muted: #444; --line: #ccc; --accent: #000; }
+  body { background: #fff; font-size: 10pt; line-height: 1.4; }
+  header.container-page, footer.container-page { display: none; }
+  .resume { padding-top: 0 !important; max-width: none; }
+  .resume-section { padding-block: 10pt; break-inside: avoid; }
+  .resume h1 { font-size: 20pt; line-height: 1.1; }
+  .resume h3 { font-size: 11pt; line-height: 1.3; }
+  a { color: inherit; text-decoration: none; }
+}

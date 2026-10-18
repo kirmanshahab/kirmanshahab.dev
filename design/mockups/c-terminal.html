@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup C · Terminal</title>
+<script src="theme.js"></script>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  body { font-family: var(--font-mono); }
+  .hero { padding: 96px 0 64px; }
+  .frame { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 40px; padding: 0 16px; border-bottom: 1px solid var(--line); background: var(--surface-2); }
+  .bar .micro { color: var(--faint); }
+  .body { padding: 48px; display: grid; gap: 24px; }
+  .prompt { font: 400 14px/22px var(--font-mono); color: var(--muted); }
+  .prompt b { font-weight: 400; color: var(--accent); }
+  .name { margin: 0; font: 500 64px/68px var(--font-mono); letter-spacing: -0.05em; }
+  .lead { font-family: var(--font-mono); font-size: 16px; line-height: 26px; max-width: 72ch; letter-spacing: 0; }
+  .kv { margin: 0; display: grid; grid-template-columns: 112px 1fr; row-gap: 4px; font-size: 14px; line-height: 22px; }
+  .kv dt { color: var(--faint); }
+  .kv dd { margin: 0; color: var(--ink-2); }
+  .kv .ok { color: var(--ok); }
+  .btn { font-family: var(--font-mono); font-size: 13px; }
+  .stats-wrap { padding-bottom: 128px; }
+  .stat-label { text-transform: none; letter-spacing: 0; }
+  @media (max-width: 1023px) { .name { font-size: 44px; line-height: 48px; } }
+  @media (max-width: 767px) {
+    .hero { padding: 32px 0 48px; }
+    .body { padding: 24px 16px; }
+    .name { font-size: 36px; line-height: 40px; }
+    .kv { grid-template-columns: 88px 1fr; font-size: 13px; }
+    .stats-wrap { padding-bottom: 80px; }
+    .bar .micro:last-child { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="nav">
+    <div class="nav-left">
+      <a class="mark" href="#">KS</a>
+      <nav class="nav-links"><a href="#" aria-current="page">~/work</a><a href="#">~/projects</a><a href="#">~/writing</a><a href="#">~/about</a></nav>
+    </div>
+    <div class="nav-right">
+      <span class="kbd"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search<kbd>⌘K</kbd></span>
+      <span class="icon-btn"><svg class="i" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
+      <span class="menu-btn">Menu</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="frame">
+      <div class="bar"><span class="micro">kirman@lahore: ~</span><span class="micro">zsh · 120×32</span></div>
+      <div class="body">
+        <div class="prompt"><b>~</b> $ whoami</div>
+        <h1 class="name">Kirman Shahab</h1>
+        <p class="lead">Senior full-stack engineer who builds the hard parts of SaaS: multi-tenant isolation, job queues that don’t melt, billing and metering, and AI agents that safely touch real customer data.</p>
+        <dl class="kv">
+          <dt>status</dt><dd class="ok">● open to roles · remote / relocation</dd>
+          <dt>stack</dt><dd>typescript · nestjs · next.js · redis · bullmq</dd>
+          <dt>last</dt><dd>technical architect @ xislabs · 2023–2026</dd>
+          <dt>proof</dt><dd>≈4,300 commits leading a 111-module multi-tenant crm</dd>
+        </dl>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">view work <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="btn btn-secondary" href="#"><svg class="i" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>resume.pdf</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-wrap">
+    <div class="stats">
+      <div class="stat"><span class="stat-value">4,289</span><span class="stat-label micro">commits</span></div>
+      <div class="stat"><span class="stat-value">111</span><span class="stat-label micro">backend modules</span></div>
+      <div class="stat"><span class="stat-value">9</span><span class="stat-label micro">production apps</span></div>
+      <div class="stat"><span class="stat-value">5+</span><span class="stat-label micro">years shipping</span></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -1,0 +1,115 @@
+/* Shared tokens for the static mockups. Values are the plan's section 6.5.3, verbatim. */
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap");
+
+:root {
+  --bg: #FAFAF9; --surface: #FFFFFF; --surface-2: #F5F5F4;
+  --ink: #0C0A09; --ink-2: #292524; --muted: #57534E; --faint: #A8A29E;
+  --line: #E7E5E4; --line-strong: #D6D3D1;
+  --accent: #0F766E; --accent-soft: #CCFBF1; --accent-ink: #FFFFFF; --ok: #15803D;
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --gutter: 32px;
+  color-scheme: light;
+}
+.dark {
+  --bg: #09090B; --surface: #111113; --surface-2: #18181B;
+  --ink: #FAFAF9; --ink-2: #E7E5E4; --muted: #A1A1AA; --faint: #52525B;
+  --line: #27272A; --line-strong: #3F3F46;
+  --accent: #2DD4BF; --accent-soft: #042F2E; --accent-ink: #042F2E; --ok: #4ADE80;
+  color-scheme: dark;
+}
+@media (max-width: 767px) { :root { --gutter: 16px; } }
+@media (min-width: 768px) and (max-width: 1023px) { :root { --gutter: 24px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 16px/26px var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+::selection { background: var(--accent-soft); color: var(--ink); }
+.mono { font-family: var(--font-mono); }
+.num { font-variant-numeric: tabular-nums; }
+.micro {
+  font: 500 12px/16px var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+}
+.container { width: 100%; max-width: calc(1120px + var(--gutter) * 2); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ---- nav ---- */
+.nav { height: 64px; display: flex; align-items: center; justify-content: space-between; }
+.nav-left { display: flex; align-items: center; gap: 32px; }
+.mark {
+  display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--line-strong); font: 500 12px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--ink);
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 24px; font-size: 14px; line-height: 22px; }
+.nav-links a { color: var(--muted); text-decoration: none; }
+.nav-links a[aria-current] { color: var(--ink); }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.kbd {
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted); font: 400 12px/16px var(--font-mono);
+}
+.kbd kbd { font: inherit; color: var(--ink-2); }
+.icon-btn {
+  display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+}
+svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---- shared hero pieces ---- */
+.pill {
+  display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 12px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); font: 500 12px/16px var(--font-mono); color: var(--ink-2);
+}
+.dot { position: relative; width: 8px; height: 8px; border-radius: 999px; background: var(--ok); }
+.dot::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--ok);
+  animation: pulse 2s var(--ease-out) infinite;
+}
+@keyframes pulse { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(2.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .dot::after { animation: none; } }
+
+.display {
+  margin: 0; font-weight: 600; font-size: 64px; line-height: 68px; letter-spacing: -0.035em; text-wrap: balance;
+}
+@media (max-width: 1023px) { .display { font-size: 44px; line-height: 48px; } }
+.lead { margin: 0; max-width: 64ch; font-size: 20px; line-height: 28px; color: var(--ink-2); text-wrap: pretty; letter-spacing: -0.01em; }
+@media (max-width: 767px) { .lead { font-size: 18px; line-height: 28px; } }
+.proof { margin: 0; font-size: 16px; line-height: 26px; color: var(--muted); text-wrap: pretty; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px;
+  border-radius: 8px; font: 500 14px/22px var(--font-sans); text-decoration: none; border: 1px solid transparent;
+  transition: transform 150ms var(--ease-out), background-color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+}
+@media (max-width: 767px) { .btn { height: 44px; } }
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: var(--ink); color: var(--bg); }
+.btn-secondary { border-color: var(--line-strong); color: var(--ink); background: var(--surface); }
+
+/* ---- proof strip ---- */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.stat { padding: 24px; }
+.stat + .stat { border-left: 1px solid var(--line); }
+.stat-value { display: block; font: 500 32px/40px var(--font-mono); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: var(--ink); }
+.stat-label { display: block; margin-top: 8px; }
+@media (max-width: 767px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  .stat { padding: 16px; }
+  .stat + .stat { border-left: 0; }
+  .stat:nth-child(even) { border-left: 1px solid var(--line); }
+  .stat:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .stat-value { font-size: 24px; line-height: 32px; }
+}
+.menu-btn { display: none; }
+@media (max-width: 767px) {
+  .nav-links, .kbd { display: none; }
+  .menu-btn { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); font: 500 12px/16px var(--font-mono); color: var(--ink-2); }
+}

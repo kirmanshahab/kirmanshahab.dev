@@ -1,0 +1,24 @@
+---
+slug: multi-tenant-crm
+title: Leading a 111-module multi-tenant CRM for lending teams
+summary: How I led the backend and frontend of a CRM where every query, job and socket event has to know which tenant it belongs to.
+period: 2024 – 2026
+role: Lead engineer
+order: 1
+featured: true
+status: draft
+cover: crm
+tldr:
+  - Lead engineer and top contributor (≈4,300 commits) on a NestJS + Next.js CRM with 111 backend modules.
+  - Tenant isolation built into every layer through request-scoped context and guards, with RBAC and plan-based entitlements on top.
+  - Added a CI type-check gate after finding that the SWC build had silently shipped 17 type errors to production.
+stack: [NestJS, Next.js, MongoDB, Redis, BullMQ, Socket.IO, TypeScript]
+---
+
+## Context
+
+Lending and mortgage teams use the CRM to capture leads, run them through pipelines, and talk to borrowers by email, SMS, voice and AI agents. Every team is a separate tenant, often with several branches inside it, all sharing one deployment.
+
+I joined as one of the engineers and became the lead on both the NestJS backend and the Next.js frontend. Over three years the backend grew to 111 feature modules, about 4,000 TypeScript files and about 1,340 test spec files.
+
+The full write-up (architecture explorer, key decisions, the MongoDB lessons and the V2 → V3 strategy) is being written now.

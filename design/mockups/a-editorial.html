@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup A · Editorial</title>
+<script src="theme.js"></script>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  .hero { padding: 96px 0 64px; }
+  .meta-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--line);
+  }
+  .name { margin-top: 48px; }
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 32px; margin-top: 48px; }
+  .copy { grid-column: 1 / span 7; display: grid; gap: 24px; align-content: start; }
+  .facts { grid-column: 9 / span 4; margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .facts div { display: grid; grid-template-columns: 96px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .facts dt { margin: 0; }
+  .facts dd { margin: 0; font-size: 14px; line-height: 22px; color: var(--ink-2); }
+  .actions { margin-top: 8px; }
+  .stats-wrap { padding-bottom: 128px; }
+  @media (max-width: 1023px) {
+    .copy, .facts { grid-column: 1 / -1; }
+    .facts { margin-top: 48px; }
+  }
+  @media (max-width: 767px) {
+    .hero { padding: 48px 0 48px; }
+    .name { margin-top: 32px; }
+    .grid { margin-top: 32px; }
+    .meta-row .micro:last-child { display: none; }
+    .stats-wrap { padding-bottom: 80px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="nav">
+    <div class="nav-left">
+      <a class="mark" href="#">KS</a>
+      <nav class="nav-links"><a href="#" aria-current="page">Work</a><a href="#">Projects</a><a href="#">Writing</a><a href="#">About</a></nav>
+    </div>
+    <div class="nav-right">
+      <span class="kbd"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search<kbd>⌘K</kbd></span>
+      <span class="icon-btn"><svg class="i" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></span>
+      <span class="menu-btn">Menu</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="meta-row">
+      <span class="pill"><span class="dot"></span>Open to roles · remote / relocation</span>
+      <span class="micro">Lahore, PK · UTC+5</span>
+    </div>
+    <h1 class="display name">Kirman Shahab</h1>
+    <div class="grid">
+      <div class="copy">
+        <p class="lead">Senior full-stack engineer who builds the hard parts of SaaS: multi-tenant isolation, job queues that don’t melt, billing and metering, and AI agents that safely touch real customer data.</p>
+        <p class="proof">≈4,300 commits in 3 years leading a 111-module multi-tenant CRM.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#">View work <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          <a class="btn btn-secondary" href="#"><svg class="i" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>Download resume</a>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt class="micro">Focus</dt><dd>Multi-tenant SaaS, queues, billing, AI agents</dd></div>
+        <div><dt class="micro">Stack</dt><dd class="mono">TypeScript · NestJS · Next.js</dd></div>
+        <div><dt class="micro">Last</dt><dd>Technical Architect, XisLabs · 2023–2026</dd></div>
+        <div><dt class="micro">Before</dt><dd>Casper blockchain + React Native</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="stats-wrap">
+    <div class="stats">
+      <div class="stat"><span class="stat-value">4,289</span><span class="stat-label micro">Commits</span></div>
+      <div class="stat"><span class="stat-value">111</span><span class="stat-label micro">Backend modules</span></div>
+      <div class="stat"><span class="stat-value">9</span><span class="stat-label micro">Production apps</span></div>
+      <div class="stat"><span class="stat-value">5+</span><span class="stat-label micro">Years shipping</span></div>
+    </div>
+  </section>
+</div>
+</body>
+</html>
