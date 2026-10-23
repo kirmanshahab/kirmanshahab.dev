@@ -13,7 +13,7 @@ export const resume = {
       org: "XisLabs, Lahore, Pakistan",
       period: "Jul 2023 – Oct 2026",
       bullets: [
-        "Technical architect for LoanLock, a multi-tenant SaaS CRM for lending and mortgage teams: 111 NestJS modules, ~4,000 TypeScript files, ~1,340 test specs. Top contributor with ≈4,300 commits across 9 production apps.",
+        "Technical architect for Maple Connect, a multi-tenant SaaS CRM for lending and mortgage teams: 111 NestJS modules, ~4,000 TypeScript files, ~1,340 test specs. Top contributor with ≈4,300 commits across 9 production apps.",
         "Also business analyst and project manager for a small team: requirements, specs, sprints, delivery.",
         "Architected multi-tenant data isolation with request-scoped tenant context and guards across all 111 modules, plus RBAC (JWT, OAuth 2.0) and plan-based entitlements enforced on API and client.",
         "Built event-driven job processing on BullMQ and Redis for campaigns, drip sequences, cron automations and bulk imports. Designed a global Redis rate budget shared by every worker after an email-provider suspension; zero suspensions afterwards.",
