@@ -17,7 +17,7 @@ const rows: [string, React.ReactNode][] = [
   ["Experience", `5+ years. Last 3 as lead engineer on a 111-module multi-tenant CRM (≈${stats.roundedCommits} commits). Before: blockchain (Casper) + React Native.`],
   ["Stack", "TypeScript · Node.js · NestJS · Next.js · React · MongoDB · Redis · BullMQ · Socket.IO · Docker · GitHub Actions · AWS"],
   ["Location", `${site.location} (${site.timezone}). Remote, or relocation with visa sponsorship.`],
-  ["Availability", "Available now."],
+  ["Availability", "Currently employed · 2 weeks’ notice."],
   ["Contact", <a key="e" href={`mailto:${site.email}`} className="link">{site.email}</a>],
 ];
 

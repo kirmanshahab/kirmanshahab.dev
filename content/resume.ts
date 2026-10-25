@@ -11,7 +11,7 @@ export const resume = {
     {
       title: "Technical Architect, Full Stack Development",
       org: "XisLabs, Lahore, Pakistan",
-      period: "Jul 2023 – Oct 2026",
+      period: "Jul 2023 – Present",
       bullets: [
         "Technical architect for Maple Connect, a multi-tenant SaaS CRM for lending and mortgage teams: 111 NestJS modules, ~4,000 TypeScript files, ~1,340 test specs. Top contributor with ≈4,300 commits across 9 production apps.",
         "Also business analyst and project manager for a small team: requirements, specs, sprints, delivery.",

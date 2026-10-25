@@ -66,8 +66,8 @@ export default function About() {
             building React sites for small businesses.
           </p>
           <p>
-            I left XisLabs in October 2026 and I’m looking for my next team: somewhere that cares about reliability and good
-            product, remote or with relocation.
+            I’m currently Technical Architect at XisLabs and looking for my next challenge: a team that cares about reliability
+            and good product, remote or with relocation.
           </p>
         </div>
 
