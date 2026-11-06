@@ -16,6 +16,7 @@ const work = defineCollection({
       tldr: s.array(s.string()).length(3),
       stack: s.array(s.string()),
       cover: s.string(),
+      image: s.string().optional(),
       body: s.mdx(),
     })
     .transform((data) => ({ ...data, url: `/work/${data.slug}` })),

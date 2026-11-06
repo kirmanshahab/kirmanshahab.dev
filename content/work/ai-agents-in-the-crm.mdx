@@ -1,24 +1,72 @@
 ---
 slug: ai-agents-in-the-crm
-title: Letting AI agents touch real customer data safely
-summary: An MCP server that exposes CRM operations to AI agents, tool calling across three model providers, and metering every token.
+title: Letting AI agents use real customer data safely
+summary: An MCP server that gives AI agents permission-checked access to a CRM, a team of specialist agents per user, and one ledger that meters every AI call.
 period: 2025 – 2026
-role: Lead engineer
+role: Technical Architect
 order: 3
 featured: true
-status: draft
+status: published
 cover: agents
 tldr:
-  - Built an MCP server that exposes CRM operations to AI agents, with tool calling across Claude, OpenAI and Gemini.
-  - Made AI agents first-class chat members. @mention one in a thread and it opens a task card there.
-  - Built per-use token metering and a wallet, then found and fixed calls that were never being charged.
-stack: [MCP, Anthropic, OpenAI, Gemini, Vercel AI SDK, NestJS]
+  - Built an MCP server with 270+ CRM tools. Every call is permission-checked as the person who asked, written to an audit log, and stripped of credentials before the model sees it.
+  - Gave every user an assistant that delegates to specialist agents (leads, pipelines, campaigns, bookings and more). Outbound messages need a person's approval on a route the agent cannot reach.
+  - Put every AI call through one billing ledger with plan-based rates, and found AI features that had been reaching providers without charging anyone.
+stack: [MCP, Anthropic, OpenAI, Gemini, Hermes, NestJS, MongoDB, Redis]
 ---
 
 ## Context
 
-Once a CRM holds real borrower data, giving an AI agent access to it is a security question before it's a product question. Each tool call has to be scoped to one tenant, permitted for the user behind it, and paid for.
+Once a CRM holds real customer data, giving an AI agent access to it is a security question before it is a product question. An agent that can do anything is a liability. An agent that can do exactly what the person asking can do is useful.
 
-I built the MCP server that exposes CRM operations as tools, the provider routing that lets the same tools work across three model vendors, and the metering that bills agent usage per call.
+I built the layer that makes that true: the MCP server that exposes CRM operations as tools, the agents that use them, the model routing underneath, and the metering that makes it safe to leave switched on.
 
-The full write-up (tool design, permission tiers, the billing migration) is being written now. It leads into my public project **mcp-tenant-tools**.
+## One table and one wrapper
+
+The server exposes more than 270 tools in about 40 groups: leads, customers, automations, campaigns, recruitment, pipelines and more. Checking permissions by hand in each tool would be 270 chances to forget one.
+
+So there is one table that maps every tool to the role permission it needs, and one wrapper that every tool runs inside. The wrapper checks the permission, writes the audit record with user, company, tool, arguments, outcome and time, and only then runs the tool. A test fails if a tool is registered without an entry in the table, so a forgotten check cannot reach production.
+
+A few rules hold for every tool:
+
+- The company and branch come from the token, never from the arguments an agent supplies.
+- Destructive tools need an explicit confirm, and bulk tools need a confirmed count.
+- Messages go to one known contact at a time.
+- Credentials are stripped from anything returned to the model, using a deny-list and a name pattern, and again before audit storage. Whatever an agent reads can end up in a transcript.
+
+The server is stateless over HTTP. Each company has its own key with an optional expiry, and a key can require that a real user is acting. A frozen company is refused.
+
+## Agents act as a person
+
+An agent's reach should equal the reach of the person asking. Every call carries a reference to the task, which resolves to the person who started it, so the agent runs as them. A user limited to their own contacts cannot get an owner's view by asking the assistant.
+
+## A team of agents per user
+
+Each user gets an assistant plus specialists for leads, pipelines, automations, campaigns, content, bookings, tasks and more, running on Hermes. The assistant delegates through a tool, returns at once, and the specialist answers in the same chat in its own name. Someone starts one by mentioning it in chat.
+
+Two design choices made this manageable:
+
+- **Sessions.** A private chat shares one session per person, agent and day. A channel or group gets one session per conversation, so private work never leaks into a room.
+- **Provisioning.** Each company has its own container that sleeps when idle, and a reconciler moves each user's profile toward the state the database says it should be in. Because it converges instead of reacting to events, a duplicated or out-of-order event cannot break it.
+
+## People stay in the loop
+
+Outbound email, texts and voicemail drafts need a person's approval. The approval is tied to a hash of the exact message and expires after an hour, and it is made on a route the agent itself cannot call. An earlier version asked for confirmation on the agent's side and could stall with nobody able to answer, so the new design fails toward "did not send". Scheduled jobs show a Start and Cancel card, and nothing runs before Start.
+
+## Model routing
+
+The CRM's own AI chat sits behind one interface over eleven models from OpenAI, Anthropic and Google. It handles each provider's quirks, such as restricted parameters on some models, tool-call formats, and Gemini's call signatures, and normalises usage into input, cached and output tokens. Transient failures are retried twice with short delays.
+
+The platform currently pins a single fast, low-cost default model, because most CRM tasks do not need more. A small router call picks one to three tool categories for each chat turn, so the model only sees the tools it needs.
+
+## Metering, and the calls nobody paid for
+
+Every AI call is charged through one ledger. Rates live in the plan and default to zero, which means a new meter ships switched off and is turned on by editing a plan, not by deploying code. Agent runs are priced from the usage the model reports, with cached tokens subtracted so they are not paid twice. A request from someone with no tokens is refused up front.
+
+Building this showed that several features had been reaching providers without charging anyone: automation texts and voicemails, AI auto-replies, chat agents and insight cards. I routed all of them through the ledger and shipped the rates switched off, then turned them on from the plan.
+
+A related bug showed up later. A weekly job that bills voice minutes read its rate from the wrong field, so the rate came out as zero, and the job still reset the minutes, quietly writing them off. The fix was one shared rate resolver for every meter.
+
+## Testing it
+
+There is no single evaluation gate for AI behaviour, and I would not claim one. What exists is a large set of deterministic tests for permissions, tenant scope and billing, a labelled set of 30 queries that checks the tool-category router against a 90 percent bar, and opt-in live conversation checks across three models. The deterministic tests are the ones I trust most, because they are the ones that run every time.

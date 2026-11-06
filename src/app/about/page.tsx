@@ -4,7 +4,6 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { PageHeader } from "@/components/page-header";
 import { Timeline } from "@/components/timeline";
-import { stats } from "@/lib/work-stats";
 import { site } from "@/site.config";
 
 export const metadata: Metadata = {
@@ -19,7 +18,7 @@ const hasHeadshot = existsSync(join(process.cwd(), "public", "headshot.jpg"));
 const values = [
   {
     title: "Fix the cause, not the alert",
-    body: "When our email provider suspended us, I traced it to a test-send endpoint with no rate limit. Then I went one step further: per-worker limits multiply across the fleet, so I replaced them with one shared Redis budget.",
+    body: "When the SMS provider started returning rate-limit errors, I found that per-worker limits multiply across concurrent jobs. I replaced them with one shared Redis budget instead of tuning each worker.",
   },
   {
     title: "Make the safe path the default",
@@ -40,7 +39,7 @@ const facts = [
   ["Looking for", "Senior full-stack or product-engineering roles, remote or with relocation"],
   ["Roles", "Technical architect, business analyst, project lead"],
   ["Stack", "TypeScript · NestJS · Next.js · MongoDB · Redis · BullMQ"],
-  ["Shipped", `≈${stats.roundedCommits} commits across 9 production apps since ${stats.firstDate.slice(0, 4)}`],
+  ["Shipped", "A CRM live at 10+ companies, a bakery commerce platform, e-commerce and mobile apps"],
 ];
 
 export default function About() {
@@ -51,9 +50,9 @@ export default function About() {
       <div className="grid gap-12 md:grid-cols-12">
         <div className="grid content-start gap-4 text-body text-ink-2 md:col-span-7">
           <p>
-            I’m Kirman, a full-stack engineer in Lahore. For the last three years I was the lead engineer on a multi-tenant CRM
-            for lending and mortgage teams: a NestJS backend that grew to 111 modules, a Next.js frontend, and the queues,
-            billing and AI features that tie them together.
+            I’m Kirman, a full-stack engineer in Lahore. For the last three years I have led a 10-person team building a multi-tenant
+            CRM that now runs at 10+ companies: a NestJS backend, a Next.js frontend, and the queues, billing and AI
+            features that tie them together.
           </p>
           <p>
             Most of what I’m proud of there is invisible when it works: tenant data that never leaks between customers,

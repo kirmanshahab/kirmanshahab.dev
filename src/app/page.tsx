@@ -1,19 +1,20 @@
 import { work } from "#content";
 import { CaseCard } from "@/components/case-card";
-import { Heatmap } from "@/components/home/heatmap";
 import { Hero } from "@/components/home/hero";
-import { Projects } from "@/components/home/projects";
+import { LihaShowcase } from "@/components/home/liha-showcase";
 import { ProofStrip } from "@/components/home/proof-strip";
 import { SectionHeading } from "@/components/section-heading";
 import { Timeline } from "@/components/timeline";
 
 export default function Home() {
-  const featured = work.filter((w) => w.featured).sort((a, b) => a.order - b.order);
+  const featured = work.filter((w) => w.featured && w.slug !== "liha-platform").sort((a, b) => a.order - b.order);
   return (
     <div className="container-page">
       <Hero />
       <div className="grid gap-20 md:gap-32">
         <ProofStrip />
+
+        <LihaShowcase />
 
         <section aria-labelledby="work-title">
           <SectionHeading id="work-title" eyebrow="Selected work" title="Case studies" href="/work" linkLabel="All case studies" />
@@ -25,10 +26,6 @@ export default function Home() {
             ))}
           </ul>
         </section>
-
-        <Heatmap />
-
-        <Projects />
 
         <section aria-labelledby="timeline-title" className="grid gap-8 md:grid-cols-12">
           <div className="md:col-span-4">

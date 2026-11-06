@@ -1,24 +1,61 @@
 ---
 slug: multi-tenant-crm
-title: Leading a 111-module multi-tenant CRM for lending teams
-summary: How I led the backend and frontend of a CRM where every query, job and socket event has to know which tenant it belongs to.
+title: Building a multi-tenant CRM that runs at 10+ companies
+summary: "How a team of ten built a custom CRM from scratch: company-scoped data, generated permissions, plan-based access and a safe way to move customers over."
 period: 2024 – 2026
-role: Lead engineer
+role: Technical Architect
 order: 1
 featured: true
-status: draft
+status: published
 cover: crm
 tldr:
-  - Lead engineer and top contributor (≈4,300 commits) on a NestJS + Next.js CRM with 111 backend modules.
-  - Tenant isolation built into every layer through request-scoped context and guards, with RBAC and plan-based entitlements on top.
-  - Added a CI type-check gate after finding that the SWC build had silently shipped 17 type errors to production.
+  - Led a team of 10 building a NestJS and Next.js CRM, implemented for 10+ customers. It has 1,700+ endpoints, 350+ MongoDB schemas and 170+ backend modules.
+  - Company scoping is built from shared helpers, guards and tests, and every route can be checked against one generated permission list.
+  - Moved existing customers to the rebuilt product with a tool that does a dry run first and refuses to commit without a backup.
 stack: [NestJS, Next.js, MongoDB, Redis, BullMQ, Socket.IO, TypeScript]
 ---
 
 ## Context
 
-Lending and mortgage teams use the CRM to capture leads, run them through pipelines, and talk to borrowers by email, SMS, voice and AI agents. Every team is a separate tenant, often with several branches inside it, all sharing one deployment.
+Sales and service teams use the CRM to capture leads, run them through pipelines, and talk to customers by email, SMS, WhatsApp, voice and AI agents. We studied Microsoft Dynamics 365, Salesforce and Odoo, then built our own. Every company is a separate tenant, often with several branches, all sharing one deployment.
 
-I joined as one of the engineers and became the lead on both the NestJS backend and the Next.js frontend. Over three years the backend grew to 111 feature modules, about 4,000 TypeScript files and about 1,340 test spec files.
+I led the architecture and a team of ten: five or more developers, three QA engineers and two business analysts. The backend grew to 170+ modules, 1,700+ REST endpoints and 350+ MongoDB schemas. The web app is a Next.js app with more than 130 pages.
 
-The full write-up (architecture explorer, key decisions, the MongoDB lessons and the V2 → V3 strategy) is being written now.
+## Keeping every company in its own lane
+
+Tenant isolation is not a feature you add later. Every request knows which company it belongs to, because the login token carries it. From there, data access goes through shared pieces instead of each developer's memory:
+
+- **Shared helpers** build the company filter and refuse to run if a company is missing, so the failure is loud, not a silent leak. They also narrow a role to its own branch or its own contacts.
+- **Guards** protect the routes that need them, including a tenant guard for integrations and a guard that blocks a frozen company.
+- **Tests** pin the rules, so a change that loosens one fails before release.
+
+Background jobs and real-time events carry the company in their payloads, and each person's chat sockets join rooms for themselves, their company and the conversation, so presence and messages only reach the right people.
+
+## Permissions from one list
+
+Roles are sets of named permissions, such as "can edit leads". They are declared once in a registry, and a script generates the role schema and the lists the API uses from it. A check command fails if the generated files drift from the registry. We added it after a hand-kept list had left 92 flags out of sync.
+
+Routes opt in with a decorator that names the permission they need. Plans work the same way: a decorator names the module a route belongs to, and a route outside the customer's plan answers 403 with a clear code. The frontend mirrors the same names so the UI hides what a person cannot use, but the server is the one that enforces it.
+
+## Moving customers over
+
+The old product and the rebuilt one had different data shapes, so customers were moved one at a time by a migration tool. It was built to be safe by default:
+
+- It does a dry run unless told otherwise, and a real run needs an explicit flag confirming a backup exists.
+- It checks that the source and target companies are the ones you meant, and that they are different.
+- It moves CRM data first and recruitment data second, and refuses the second phase while live automations could re-enrol the migrated records.
+- A compare tool checks the result, and a report is saved even when a run fails.
+
+## Running it
+
+The app runs from the same code as two processes: an API and a worker with no web server. Production is a small set of Docker services (the API, the worker, Redis and a Caddy proxy) on one server. Redis is set never to evict, and the scheduled jobs run on one worker only, because there is no leader election and a second worker would run each job twice. That constraint is written next to the config.
+
+## The frontend
+
+The web app is Next.js with TanStack Query for server data, Zustand for small pieces of state, and Socket.IO for real-time updates. It uses Radix and shadcn components on a shared design system with a contrast check. It is covered by Vitest unit tests and a set of Playwright end-to-end tests, and a pipeline runs type checks, lint and tests on every change.
+
+## What I would tell another team
+
+- Write the design document before the feature. It is cheaper to argue over a page than over a pull request.
+- Put rules in shared helpers and generated files, not in each developer's memory, and make a check fail when they drift.
+- Make risky tools safe by default: dry run first, an explicit flag for the real thing, and a report either way.

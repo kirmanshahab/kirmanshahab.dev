@@ -1,24 +1,50 @@
 ---
 slug: queues-that-dont-melt
 title: Campaign and email infrastructure on BullMQ
-summary: Campaigns, drips and scheduled email on Redis queues, and the incidents that taught me to budget rate limits globally rather than per worker.
+summary: "How a CRM sends campaigns and runs scheduled work without overloading its providers: separate API and worker processes, one shared send budget, and jitter."
 period: 2024 – 2026
-role: Lead engineer
+role: Technical Architect
 order: 2
 featured: true
-status: draft
+status: published
 cover: queues
 tldr:
-  - Designed a global Redis rate budget shared by every queue worker after the email provider suspended sending. Zero suspensions since.
-  - Removed a cron thundering herd (every past-due campaign firing at exactly 07:00:05) by spreading jobs with jitter.
-  - Moved scheduled sends off the provider and onto BullMQ delayed jobs, with pause and resume.
+  - Split the app into an API process and a worker process. The worker runs 35+ queue processors and about 100 scheduled jobs, so heavy work never slows the screens people use.
+  - Replaced per-worker limits with one shared Redis send budget, because limits that look safe on each worker add up across all of them.
+  - Removed a cron "herd" (every overdue campaign firing at 07:00:05) with random spreading, and turned scheduled sends into delayed jobs that can be paused and resumed.
 stack: [BullMQ, Redis, NestJS, SendGrid, AWS SES, Twilio]
 ---
 
 ## Context
 
-A CRM that sends campaigns lives or dies by its queues. Ours ran campaigns, drip sequences, cron automations, bulk imports and every outbound email through BullMQ on Redis.
+A CRM that sends campaigns lives or dies by its queues. Ours ran campaigns, drip sequences, follow-ups, booking reminders, automations and every outbound email and text through BullMQ on Redis. That is 35+ queue processors and about 100 scheduled jobs.
 
-The interesting part was learning that per-worker limits add up: with *concurrency × workers × per-worker limit*, a "safe" setting on one worker becomes an unsafe one across the fleet. The fix was one shared budget for the whole system.
+The app runs as two processes from the same code. The API answers requests. The worker has no web server and does the background work. Each processor sets its own concurrency, and Redis is set never to evict data, so a queued job is never silently thrown away.
 
-The full write-up (the two-lane sender model, the suspension post-mortem, domain authentication and inbound reply routing) is being written now.
+## Limits that add up
+
+The first lesson was that limits multiply. For texts, an in-process limit per job meant that with several jobs running at once, a company could send several times its allowed rate, and the provider answered with rate-limit errors. For email it was the same shape: five campaigns, each running ten lanes, is fifty sends in flight with nothing capping the total.
+
+BullMQ's own limiter did not help, because it only slows how fast jobs start, not how many emails each job sends.
+
+## One shared budget
+
+I put the cap in Redis, where every worker and every campaign sees the same count. It is a fixed one-second window, which is deliberately simple. When the budget for that second is used up, a sender waits for the next window plus a few milliseconds of random delay instead of dropping the email. Slow is better than lost.
+
+I also chose which way each guard fails. If Redis cannot be reached, the rate cap lets the send through, because a missed cap is better than a lost email. The lock that stops the same campaign sending twice does the opposite and blocks, because a duplicate send is worse than a delay.
+
+## The 07:00:05 herd
+
+A daily job picked up every overdue campaign and scheduled each one for "now plus five seconds". With hundreds of companies, hundreds of campaigns fired inside one second.
+
+A rate limiter alone would only have made that herd queue up. The fix was to spread overdue campaigns over a random window, applied only to the daily job. When someone clicks Publish themselves, the send is still immediate.
+
+## Scheduled sends
+
+A scheduled campaign is a delayed BullMQ job with a predictable key. Pausing removes the job and resuming adds it back, and the database record, not the job, is the source of truth. A rescue job looks for campaigns that got stuck by checking whether their lock is still held, not by looking at timestamps, and handles a limited number per sweep so it cannot create a spike of its own.
+
+## Constraints I wrote down
+
+- Only one worker should run the scheduled jobs, because there is no leader election and a second worker would fire every job twice. The deployment file says so.
+- Jobs that run out of attempts go to a dead-letter store in the database, kept for 30 days, so they survive a Redis restart.
+- The worker gets a long grace period at shutdown so running jobs can finish.

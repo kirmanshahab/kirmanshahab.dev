@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { work } from "#content";
-import { covers } from "#root/content/site-data";
 import { MDXContent } from "@/components/mdx";
-import { SystemMap } from "@/components/system-map";
+import { CoverArt } from "@/components/cover-art";
 import { articleJsonLd, JsonLd } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -55,8 +55,12 @@ export default async function CaseStudy({ params }: Props) {
             </p>
           )}
         </div>
-        <div className="relative h-56 overflow-hidden rounded-md border border-line bg-surface-2 md:col-span-5 md:h-auto md:min-h-64" aria-hidden>
-          <SystemMap highlight={covers[item.cover] ?? []} bare crop className="absolute inset-0 size-full" />
+        <div className="relative h-56 overflow-hidden rounded-[20px] border border-line bg-surface-2 md:col-span-5 md:h-auto md:min-h-64" aria-hidden>
+          {item.image ? (
+            <Image src={item.image} alt="" fill sizes="(min-width: 768px) 440px, 100vw" className="object-cover object-top" priority />
+          ) : (
+            <CoverArt cover={item.cover} className="absolute inset-0" />
+          )}
         </div>
       </header>
 

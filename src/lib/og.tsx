@@ -9,7 +9,7 @@ const fontDir = join(process.cwd(), "node_modules", "geist", "dist", "fonts");
 const font = (path: string) => readFile(join(fontDir, path));
 
 // Dark theme tokens (6.5.3); OG images can't read CSS variables.
-const c = { bg: "#09090B", surface: "#111113", ink: "#FAFAF9", ink2: "#E7E5E4", muted: "#A1A1AA", line: "#27272A", accent: "#2DD4BF", ok: "#4ADE80" };
+const c = { bg: "#14100D", surface: "#1D1814", ink: "#FBF3E8", ink2: "#E8DCCB", muted: "#B6A693", line: "#30271F", accent: "#FF8F52", ok: "#4ADE80" };
 
 /** One template for every page's Open Graph image. */
 export async function ogImage({ eyebrow, title, footer }: { eyebrow: string; title: string; footer?: string }) {

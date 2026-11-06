@@ -1,0 +1,77 @@
+---
+slug: liha-platform
+title: LIHA, a bakery's shop, back office and staff app
+summary: One live system for a Lahore bakery. A Next.js online shop, a headless ERP that tracks stock, recipes and cash, and a React Native app for the kitchen and counter.
+period: Aug 2026 – now
+role: Architect and developer
+order: 0
+featured: true
+status: published
+cover: bakery
+image: /work/liha/storefront-checkout.webp
+tldr:
+  - A Next.js storefront, a headless Payload ERP on PostgreSQL and an Expo React Native staff app, all sharing one package of business rules.
+  - Built to be trusted with money and stock. Cross-business data access is tested adversarially, and in a load test 200 buyers racing for the last 25 units produced exactly 25 orders.
+  - More than 2,700 automated tests across the four packages, and a backup restore that has been rehearsed against a 300,000-order database.
+stack: [Next.js, Payload CMS, PostgreSQL, React Native, Expo, TypeScript, Zod, Docker, Caddy]
+---
+
+## The problem
+
+A small food business runs on a notebook. Orders arrive on WhatsApp, stock lives in someone's head, and cash is collected by a rider and reconciled days later. A normal online shop solves one of those problems and ignores the rest.
+
+I built one system where a customer places an order, the kitchen sees what to bake, stock goes down by the right amount, and the owner can see what cash is still owed to the business. The hard part is not the shop page. It is that all of those numbers have to agree.
+
+## Three surfaces, one set of rules
+
+<Shot src="/work/liha/storefront-checkout.webp" alt="The LIHA checkout page" w={1280} h={820} url="liha · checkout" caption="The storefront checkout. Pickup or delivery, JazzCash or bank transfer, and a discount code. Nothing is charged on the page; the bakery confirms the total by WhatsApp first." />
+
+**The storefront** is a Next.js app. It never touches the database. It asks the ERP for the menu and prices through a small set of server-side endpoints, so the shop can be rebuilt or replaced without touching business logic.
+
+<Shot src="/work/liha/erp-stock-levels.webp" alt="The LIHA back office, stock levels by branch" w={1440} h={820} url="admin · stock levels" caption="The back office. Stock is changed only by recording a delivery, an adjustment, a transfer or a count, never by editing a number." />
+
+**The ERP** is headless. It is Payload CMS on PostgreSQL with 61 collections, and it is the only thing that writes to the database. It handles stock by branch, recipes and production batches, cash and remittances, deliveries with riders and zones, loyalty, customer lists and reports.
+
+**The staff app** is React Native with Expo, for the people who do the work: a baker recording a batch at 6 a.m., a counter staff member marking cash received, a rider confirming delivery.
+
+<Flow steps={["Tap on the phone", "Action saved in an offline queue with a unique key", "Sent when there is signal, retried with the same key", "Server applies it once, however many times it arrives"]} />
+
+## Decisions that mattered
+
+**Pure business rules in their own package.** Pricing, discounts, order status and loyalty are plain functions with no database or framework imports. The storefront and the ERP both use them, so they cannot disagree about what an order costs. They are also fast to test: 888 domain tests run quickly.
+
+**The server prices every order.** The browser only says what the customer wants. In a test, a request that claimed the total was Rs 1 was recorded at the real total, Rs 2,137. Prices are also snapshotted at order time, so changing a price later does not rewrite history.
+
+**Built for many businesses from day one.** LIHA is the first business, not the only one. Every record belongs to a business, and a record from another business answers 404 instead of "forbidden", because "forbidden" would confirm it exists.
+
+**Cash is a first-class thing.** Most orders are paid in cash or by transfer, so the system tracks what is owed and by whom until someone confirms it arrived. Recipes break a cake into ingredients, ingredients carry a moving average cost, and the gap between what a batch should have produced and what it did is measured.
+
+**Free where free is enough.** WhatsApp confirmations use a click-to-chat link that opens on a staff member's own phone, so there is no WhatsApp Business API and no per-message fee. At this volume the API would have cost roughly PKR 4,200 a month for a step a person has to do anyway.
+
+**One honest trade-off.** The system runs on one server in one region, with no automatic failover. For a business this size that is a deliberate choice, written down so it can be revisited.
+
+## The bug a load test found
+
+I tested checkout by sending the same order eight times at once, twenty times over. Every round created more than one order. The idempotency key existed, but two copies could both check "have I seen this key?" before either had saved it.
+
+The fix was to make requests with the same key take their turn. After it, none of the twenty rounds produced a duplicate. The fix holds for a single server process. If the ERP ever runs as two processes, the database needs a unique index on the business and key, and that is written into the notes.
+
+## Proving it works
+
+- **Tests.** 888 in the domain package, 144 for the storefront, about 1,390 for the ERP against PostgreSQL, and 351 for the mobile app.
+- **Last-unit race.** 25 units left and 200 simultaneous buyers: exactly 25 orders, 175 "sold out" replies, no errors.
+- **Backups.** Hourly, each one checked in the bucket after it is written, with a separate alert if the newest one goes stale. A restore of a 766 MB database holding 300,000 orders took 14 seconds.
+- **Speed.** Twenty-two of the busiest queries finished in under 15 ms, apart from one report at 57 ms.
+- **Browser pass.** 57 of 57 checks across the shop and back office.
+
+## The staff app
+
+Every action that changes data carries an idempotency key made at the moment of the tap and reused on every retry, and the app refuses to send a change without one. A weak signal at the counter then cannot create two payments.
+
+The app hides screens a person is not allowed to use, but the server checks everything again, because anything inside an APK can be taken apart. It is distributed as a direct APK download, which was the client's choice, with a minimum-version check so an old build cannot talk to a newer server.
+
+It is live and in use.
+
+## What is still open
+
+The restore on the existing server has been rehearsed. Rebuilding a machine from nothing has not been drilled end to end. I say that here because a system that holds a business's money should be honest about what has and has not been proven.

@@ -1,19 +1,24 @@
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import type { Work } from "#content";
-import { covers } from "#root/content/site-data";
-import { SystemMap } from "./system-map";
+import { CoverArt } from "./cover-art";
 
 export function CaseCard({ item, large = false }: { item: Work; large?: boolean }) {
   return (
     <Link href={item.url as `/work/${string}`} className="card card-link group flex h-full flex-col overflow-hidden">
-      <div className={`relative overflow-hidden border-b border-line bg-surface-2 ${large ? "h-48" : "h-32"}`} aria-hidden>
-        <SystemMap
-          highlight={covers[item.cover] ?? []}
-          bare
-          crop
-          className="absolute inset-0 size-full opacity-90 transition-transform duration-[400ms] ease-[var(--ease-out)] group-hover:scale-[1.03]"
-        />
+      <div className={`relative overflow-hidden border-b border-line bg-surface-2 ${large ? "h-48" : "h-40"}`} aria-hidden>
+        {item.image ? (
+          <Image
+            src={item.image}
+            alt=""
+            fill
+            sizes="(min-width: 768px) 360px, 100vw"
+            className="object-cover object-top transition-transform duration-[400ms] ease-[var(--ease-out)] group-hover:scale-[1.03]"
+          />
+        ) : (
+          <CoverArt cover={item.cover} className="absolute inset-0 transition-transform duration-[400ms] ease-[var(--ease-out)] group-hover:scale-[1.03]" />
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-3 p-6">
         <div className="flex items-center justify-between gap-4">

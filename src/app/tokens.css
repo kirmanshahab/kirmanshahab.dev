@@ -4,35 +4,37 @@
  * or var(--…). Checked by `pnpm contrast` → design/contrast.md.
  */
 :root {
-  --bg: #FAFAF9;
-  --surface: #FFFFFF;
-  --surface-2: #F5F5F4;
-  --ink: #0C0A09;
-  --ink-2: #292524;
-  --muted: #57534E;
-  --faint: #A8A29E;
-  --line: #E7E5E4;
-  --line-strong: #D6D3D1;
-  --accent: #0F766E;
-  --accent-soft: #CCFBF1;
+  --bg: #FBF6EE;
+  --surface: #FFFDF9;
+  --surface-2: #F3EADB;
+  --ink: #1C1410;
+  --ink-2: #3A2E26;
+  --muted: #65564A;
+  --faint: #A3927F;
+  --line: #E6DAC8;
+  --line-strong: #D0BFA6;
+  --accent: #BF3F0B;
+  --accent-soft: #FFE1CE;
   --accent-ink: #FFFFFF;
+  --sun: #F2B33D;
   --ok: #15803D;
   color-scheme: light;
 }
 
 .dark {
-  --bg: #09090B;
-  --surface: #111113;
-  --surface-2: #18181B;
-  --ink: #FAFAF9;
-  --ink-2: #E7E5E4;
-  --muted: #A1A1AA;
-  --faint: #52525B;
-  --line: #27272A;
-  --line-strong: #3F3F46;
-  --accent: #2DD4BF;
-  --accent-soft: #042F2E;
-  --accent-ink: #042F2E;
+  --bg: #14100D;
+  --surface: #1D1814;
+  --surface-2: #261F19;
+  --ink: #FBF3E8;
+  --ink-2: #E8DCCB;
+  --muted: #B6A693;
+  --faint: #6F6154;
+  --line: #30271F;
+  --line-strong: #46392C;
+  --accent: #FF8F52;
+  --accent-soft: #3A1E0F;
+  --accent-ink: #1C0E05;
+  --sun: #F2B33D;
   --ok: #4ADE80;
   color-scheme: dark;
 }

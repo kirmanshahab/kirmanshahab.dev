@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { site } from "@/site.config";
-import { stats } from "@/lib/work-stats";
 
 // Served at /?r=1 via a rewrite (next.config.ts). Static, zero client JS of its own.
 export const metadata: Metadata = {
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 
 const rows: [string, React.ReactNode][] = [
   ["Role fit", "Senior full-stack / backend / product engineer. Strongest on NestJS + Next.js SaaS: multi-tenancy, queues, billing, AI agents."],
-  ["Experience", `5+ years. Last 3 as lead engineer on a 111-module multi-tenant CRM (≈${stats.roundedCommits} commits). Before: blockchain (Casper) + React Native.`],
+  ["Experience", "5+ years. Last 3 as Technical Architect leading a team of 10 on a multi-tenant CRM live at 10+ companies. Before: blockchain (Casper) + React Native."],
   ["Stack", "TypeScript · Node.js · NestJS · Next.js · React · MongoDB · Redis · BullMQ · Socket.IO · Docker · GitHub Actions · AWS"],
   ["Location", `${site.location} (${site.timezone}). Remote, or relocation with visa sponsorship.`],
   ["Availability", "Currently employed · 2 weeks’ notice."],

@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/page-header";
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "Case studies from three years leading a multi-tenant CRM, plus headless commerce, blockchain and React Native.",
+  description: "Case studies: a bakery platform with a shop, headless ERP and mobile app, a multi-tenant CRM, queues, AI agents, commerce and blockchain.",
   alternates: { canonical: "/work" },
 };
 
@@ -16,7 +16,7 @@ export default function WorkIndex() {
       <PageHeader
         eyebrow="Work"
         title="Case studies"
-        lead="How the systems were built, what I decided, and what broke along the way. The code is private, so the diagrams are generic and any code is written fresh to illustrate a pattern."
+        lead="How the systems were built, what I decided, and what broke along the way. The source code is private, so these pages describe the design and the numbers, not the code."
       />
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {items.map((w, i) => (
