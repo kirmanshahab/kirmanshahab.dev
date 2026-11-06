@@ -2,7 +2,7 @@
 
 Portfolio of Kirman Shahab, senior full-stack engineer. Case studies of a multi-tenant CRM and a bakery’s shop, back office and staff app (LIHA). The source code of that work is private; the pages describe the design and the numbers.
 
-**Recruiters:** send people to [kirmanshahab.dev/recruiter](https://kirmanshahab.dev/recruiter) for a one-screen TL;DR.
+**Recruiters:** send people to [kirmanshahab.dev/recruiter](https://kirmanshahab-dev.vercel.app/recruiter) for a one-screen TL;DR.
 
 ## Stack
 
