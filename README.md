@@ -1,8 +1,8 @@
 # kirmanshahab.dev
 
-Portfolio of Kirman Shahab, senior full-stack engineer. Case studies, public projects, and a heatmap of three years of private commits.
+Portfolio of Kirman Shahab, senior full-stack engineer. Case studies of a multi-tenant CRM and a bakery’s shop, back office and staff app (LIHA). The source code of that work is private; the pages describe the design and the numbers.
 
-**Recruiters:** send people to [kirmanshahab.dev/?r=1](https://kirmanshahab.dev/?r=1) for a one-screen TL;DR.
+**Recruiters:** send people to [kirmanshahab.dev/recruiter](https://kirmanshahab.dev/recruiter) for a one-screen TL;DR.
 
 ## Stack
 
@@ -24,17 +24,9 @@ pnpm build && pnpm start
 | `pnpm contrast` | WCAG contrast check of every token pair → `design/contrast.md` |
 | `pnpm shoot` | Screenshots every page at 7 breakpoints × light/dark → `design/qa/<date>/` (needs `pnpm start -p 3100`) |
 
-## The commit heatmap and its privacy guarantees
-
-`data/work-stats.json` comes from `scripts/work-stats.mjs`, which runs **only on my machine** against local clones of private repos. Neither the clones nor the script's inputs ever reach this repo or CI.
-
-- It reads only `git log` author name, email and date, keeps commits whose author contains "kirman", and **drops names and emails immediately**.
-- The output has dates and counts only: no repo names, commit messages, file names, branches or emails.
-- Before writing, it refuses to save if any key or value contains `/`, `@` or a repo name. A unit test (`scripts/work-stats.test.mjs`) enforces the same rule on the committed file.
-
 ## Content
 
-Case studies are MDX in `content/work/`. The architecture diagram data in `content/architecture.ts` uses generic labels only. It drives the hero map and every case-study cover, so there are no stock images anywhere.
+Case studies are MDX in `content/work/`. Screenshots live in `public/work/`, because the Content Security Policy only allows images served from the site itself. The LIHA screenshots use seeded demo data, and no client names or real data appear anywhere.
 
 ## License
 
